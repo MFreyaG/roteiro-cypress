@@ -1,3 +1,5 @@
+const { it } = require("mocha");
+
 describe('template spec', () => {
   it('Verifica se app está abrindo', () => {
     cy.visit('http://127.0.0.1:7001/')
@@ -55,5 +57,54 @@ describe('template spec', () => {
     cy.contains('All').click();
     cy.get('.todo-list li')
       .should('have.length', 2);
+  });
+
+  it('Deleta tarefas completas', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('TP2 de ES{enter}')
+      .type('Prova de ES{enter}');
+
+    cy.get('.todo-list li .toggle')
+      .first()
+      .click();
+
+    cy.get('.clear-completed').click();
+
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Prova de ES');
+  });
+
+  it('Completar todas e filtrar completas', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('TP2 de ES{enter}')
+      .type('Prova de ES{enter}');
+
+    cy.get('.toggle-all-label').click();
+
+    cy.contains('Completed').click();
+    cy.get('.todo-list li')
+      .should('have.length', 2)
+      .first()
+      .should('have.text', 'TP2 de ES');
+  });
+
+  it('Completar todas e filtrar ativas', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('TP2 de ES{enter}')
+      .type('Prova de ES{enter}');
+
+    cy.get('.toggle-all-label').click();
+
+    cy.contains('Active').click();
+    cy.get('.todo-list li')
+      .should('have.length', 0);
   });
 });
